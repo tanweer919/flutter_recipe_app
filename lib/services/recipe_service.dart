@@ -6,6 +6,13 @@ class RecipeService {
   HttpService httpService;
   RecipeService({required this.httpService});
 
+  Future<Recipe> getRecipe(int recipeId) async {
+    final httpClient = await httpService.getApiClient();
+    final response = await httpClient.get('api/recipe/$recipeId/');
+    final recipe = Recipe.fromJson(response.data);
+    return recipe;
+  }
+
   Future<List<Recipe>> getRecipes() async {
     final httpClient = await httpService.getApiClient();
     final response = await httpClient.get('api/recipes/');
@@ -18,6 +25,15 @@ class RecipeService {
   Future<List<Recipe>> getRecipesByCategory(int categoryId) async {
     final httpClient = await httpService.getApiClient();
     final response = await httpClient.get('api/recipes/$categoryId/');
+    final recipes = (response.data["results"] as List<dynamic>)
+        .map((recipe) => Recipe.fromJson(recipe))
+        .toList();
+    return recipes;
+  }
+
+  Future<List<Recipe>> getPopularRecipes() async {
+    final httpClient = await httpService.getApiClient();
+    final response = await httpClient.get('api/recipes/popular/');
     final recipes = (response.data["results"] as List<dynamic>)
         .map((recipe) => Recipe.fromJson(recipe))
         .toList();
