@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dekorner_recipe/constants.dart';
 import 'package:dekorner_recipe/providers/app/app_provider.dart';
 import 'package:dekorner_recipe/screens/home/widgets/categories_skeleton.dart';
+import 'package:dekorner_recipe/screens/home/widgets/popular_recipe_card.dart';
+import 'package:dekorner_recipe/screens/home/widgets/popular_recipe_card_skeleton.dart';
 import 'package:dekorner_recipe/screens/home/widgets/recipe_card.dart';
 import 'package:dekorner_recipe/screens/home/widgets/recipe_card_skeleton.dart';
 import 'package:flutter/material.dart';
@@ -224,14 +226,14 @@ class Home extends HookConsumerWidget {
                                     child: Column(
                                       children: [
                                         Text(
-                                          appProvider.homeCategories![i].name.toCapitalized,
+                                          appProvider.homeCategories![i].name
+                                              .toCapitalized,
                                           style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: activeIndex.value == i
                                                 ? FontWeight.w700
                                                 : FontWeight.w400,
                                           ),
-                                          
                                         ),
                                         Padding(
                                           padding:
@@ -297,7 +299,58 @@ class Home extends HookConsumerWidget {
                               ),
                           ]),
                         ),
+                      ),
+                const Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Popular recipes',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        'See all',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ),
+                appProvider.popularRecipes != null
+                    ? SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Column(children: [
+                            for (int i = 0;
+                                i < appProvider.recipes!.length;
+                                i++)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 16.0),
+                                child: PopularRecipeCard(
+                                  recipe: appProvider.popularRecipes![i],
+                                ),
+                              ),
+                          ]),
+                        ),
                       )
+                    : SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Column(children: [
+                            for (int i = 0; i < 5; i++)
+                              const Padding(
+                                padding: EdgeInsets.only(bottom: 16.0),
+                                child: PopularRecipeCardSkeleton(),
+                              ),
+                          ]),
+                        ),
+                      ),
               ],
             ),
           ),

@@ -38,5 +38,9 @@ class AppControl extends _$AppControl {
       recipes: Optional.ofNullable(recipes),
       homeCategories: Optional.ofNullable(categories),
     );
+    final popularRecipes = await recipeService.getPopularRecipes();
+    state = state.copyWith(
+      popularRecipes: Optional.ofNullable(popularRecipes)
+    );
   }
 }
