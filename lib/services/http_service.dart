@@ -1,10 +1,10 @@
+import 'package:dekorner_recipe/constants.dart';
 import 'package:dekorner_recipe/services/local_storage_service.dart';
 import 'package:dio/dio.dart';
 
 class HttpService {
   final LocalStorageService localStorageService;
   HttpService({required this.localStorageService});
-  String baseUrl = 'https://recipe-428313.el.r.appspot.com';
   Future<Dio> getAuthenticatedApiClient() async {
     final Map<String, dynamic> tokens =
         await localStorageService.getAuthToken();

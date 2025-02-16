@@ -46,6 +46,11 @@ dependencies:
   auto_size_text: ^3.0.0
   shimmer: ^3.0.0
   optional: ^6.1.0+1
+  readmore: ^3.0.0
+  expandable_page_view: ^1.0.17
+  hugeicons: ^0.0.7
+  google_sign_in: ^6.2.2
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -95,6 +100,9 @@ flutter:
         - asset: assets/fonts/OpenSans-Medium.ttf
         - asset: assets/fonts/OpenSans-SemiBold.ttf
         - asset: assets/fonts/OpenSans-Bold.ttf
+    - family: MyFlutterApp
+      fonts:
+        - asset: assets/fonts/MyFlutterApp.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

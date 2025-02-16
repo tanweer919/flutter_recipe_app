@@ -1,5 +1,7 @@
 import 'package:dekorner_recipe/models/category.dart';
 import 'package:dekorner_recipe/models/recipe.dart';
+import 'package:dekorner_recipe/models/recipe_filter.dart';
+import 'package:dekorner_recipe/models/search_recipe.dart';
 import 'package:dekorner_recipe/services/http_service.dart';
 
 class RecipeService {
@@ -31,6 +33,15 @@ class RecipeService {
     return recipes;
   }
 
+  Future<List<Recipe>> getRecipesByFilters(List<RecipeFilter> filters) async {
+    final httpClient = await httpService.getApiClient();
+    final response = await httpClient.get('api/filter/?${filters.map((filter) => 'filterIds=${filter.id}').join('&')}');
+    final recipes = (response.data["results"] as List<dynamic>)
+        .map((recipe) => Recipe.fromJson(recipe))
+        .toList();
+    return recipes;
+  }
+
   Future<List<Recipe>> getPopularRecipes() async {
     final httpClient = await httpService.getApiClient();
     final response = await httpClient.get('api/recipes/popular/');
@@ -51,5 +62,14 @@ class RecipeService {
       categories.add(value);
     }
     return categories;
+  }
+
+  Future<List<SearchRecipe>> searchRecipesByQuery(String query) async {
+    final httpClient = await httpService.getApiClient();
+    final response = await httpClient.get('api/search/?q=$query');
+    final recipes = (response.data["results"] as List<dynamic>)
+        .map((recipe) => SearchRecipe.fromJson(recipe))
+        .toList();
+    return recipes;
   }
 }
