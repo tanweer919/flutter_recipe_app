@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "446945391736",
+    "project_id": "recipe-871ac",
+    "storage_bucket": "recipe-871ac.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:446945391736:android:30d2ef06fab912d350e98d",
+        "android_client_info": {
+          "package_name": "com.dekorner.recipify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "446945391736-388o0699suha1j7p7jef0nn7goftpstl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dekorner.recipify",
+            "certificate_hash": "57cd3104a22537299e710f55ae22b5d4ed2a7559"
+          }
+        },
+        {
+          "client_id": "446945391736-qdi24bpctufkp4m6lq600vkb432ssnlq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbxdd0NpHMXMhMJeQhXUDmrU1pNx1TuS0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "446945391736-qdi24bpctufkp4m6lq600vkb432ssnlq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "446945391736-1iihh7dcref2pjpril0gkenv29naibnr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.dekornerRecipe"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,30 +1,20 @@
-import 'package:dekorner_recipe/models/recipe.dart';
+import 'package:colorful_safe_area/colorful_safe_area.dart';
+import 'package:dekorner_recipe/constants.dart';
 import 'package:dekorner_recipe/models/recipe_filter.dart';
-import 'package:dekorner_recipe/providers/app/providers.dart';
+import 'package:dekorner_recipe/providers/fetch_recipes_by_filter.dart';
 import 'package:dekorner_recipe/screens/home/widgets/popular_recipe_card.dart';
 import 'package:dekorner_recipe/screens/home/widgets/popular_recipe_card_skeleton.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class FilterResultsScreen extends HookConsumerWidget {
   final List<RecipeFilter>? filters;
   const FilterResultsScreen({super.key, required this.filters});
-
+  static const pageSize = 10;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final recipeService = ref.read(recipeServiceProvider);
-    final recipes = useState<List<Recipe>?>(null);
-    useEffect(() {
-      Future<void> fetchInitialData() async {
-        final result = await recipeService.getRecipesByFilters(filters ?? []);
-        recipes.value = result;
-      }
-
-      fetchInitialData();
-      return () {};
-    }, []);
-    return SafeArea(
+    return ColorfulSafeArea(
+      color: Colors.white,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -37,9 +27,11 @@ class FilterResultsScreen extends HookConsumerWidget {
             ),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: const Text(
-            'Filter Results',
-            style: TextStyle(
+          title: Text(
+            filters != null && filters!.length == 1
+                ? filters![0].name.toCapitalized
+                : 'Filter Results',
+            style: const TextStyle(
               color: Colors.black,
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -48,39 +40,39 @@ class FilterResultsScreen extends HookConsumerWidget {
         ),
         body: Padding(
           padding: const EdgeInsets.only(top: 8.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                recipes.value != null
-                    ? SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Column(children: [
-                            for (int i = 0; i < recipes.value!.length; i++)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 16.0),
-                                child: PopularRecipeCard(
-                                  recipe: recipes.value![i],
-                                ),
-                              ),
-                          ]),
-                        ),
-                      )
-                    : SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Column(children: [
-                            for (int i = 0; i < 12; i++)
-                              const Padding(
-                                padding: EdgeInsets.only(bottom: 16.0),
-                                child: PopularRecipeCardSkeleton(),
-                              ),
-                          ]),
-                        ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                final page = index ~/ pageSize + 1;
+                final indexInPage = index % pageSize;
+                // use the fact that this is an infinite list to fetch a new page
+                // as soon as the index exceeds the page size
+                // Note that ref.watch is called for up to pageSize items
+                // with the same page and query arguments (but this is ok since data is cached)
+                final responseAsync =
+                    ref.watch(fetchRecipesByFilterProvider(filters!, page));
+                return responseAsync.when(
+                  error: (err, stack) => Text(err.toString()),
+                  loading: () => const Padding(
+                    padding: EdgeInsets.only(bottom: 16.0),
+                    child: PopularRecipeCardSkeleton(),
+                  ),
+                  data: (response) {
+                    // This condition only happens if a null itemCount is given
+                    if (indexInPage >= response.length) {
+                      return null;
+                    }
+                    final recipe = response[indexInPage];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: PopularRecipeCard(
+                        recipe: recipe,
                       ),
-              ],
+                    );
+                  },
+                );
+              },
             ),
           ),
         ),

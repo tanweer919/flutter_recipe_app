@@ -1,9 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:dekorner_recipe/models/tab_bar_item.dart';
-import 'package:dekorner_recipe/providers/app/providers.dart';
+import 'package:dekorner_recipe/providers/app/app_provider.dart';
+import 'package:dekorner_recipe/screens/login/login_screen_arguments.dart';
 import 'package:dekorner_recipe/screens/recipe_page/components/recipe_page_skeleton.dart';
+import 'package:dekorner_recipe/services/flushbar_service.dart';
+import 'package:dekorner_recipe/services/get_it_locator.dart';
+import 'package:dekorner_recipe/services/recipe_service.dart';
 import 'package:dekorner_recipe/widgets/custom_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:dekorner_recipe/models/recipe.dart';
@@ -26,7 +31,20 @@ class RecipeScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final recipeService = ref.read(recipeServiceProvider);
+    final recipeService = locator<RecipeService>();
+    final appProvider = ref.watch(appControlProvider);
+    final appProviderNotifier = ref.read(appControlProvider.notifier);
+    final user = appProvider.user.asData?.value;
+    final isRecipeInFavorites = user != null
+        ? user.favoriteRecipes
+            .map((recipe) => recipe.id)
+            .contains(recipe?.id ?? recipeId)
+        : false;
+    final isRecipeAlreadyCooked = user != null
+        ? user.cookingHistory
+            .map((recipe) => recipe.recipe.id)
+            .contains(recipe?.id ?? recipeId)
+        : false;
     final carouselIndex = useState(0);
     final recipeData = useState(recipe);
     final pageController = usePageController();
@@ -43,7 +61,8 @@ class RecipeScreen extends HookConsumerWidget {
     }, []);
     final fetchedRecipe = recipeData.value;
 
-    return SafeArea(
+    return ColorfulSafeArea(
+      color: Color.fromARGB(255, 52, 45, 40),
       child: Scaffold(
         body: fetchedRecipe == null
             ? const RecipePageSkeleton()
@@ -178,20 +197,106 @@ class RecipeScreen extends HookConsumerWidget {
                                     ),
                                   ),
                                 ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(100),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SvgPicture.asset(
-                                      'assets/svg/bookmark.svg',
-                                      color: Colors.black,
-                                      width: 24,
-                                      height: 24,
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        if (user != null) {
+                                          appProviderNotifier
+                                              .addRecipeToCookingHistory(
+                                                  recipe!);
+                                          FlushService.flushbarAlert(
+                                            context: context,
+                                            title: 'Success',
+                                            message:
+                                                'Recipe added to cooking history',
+                                            seconds: 3,
+                                          );
+                                        } else {
+                                          Navigator.of(context).pushNamed(
+                                            '/login',
+                                            arguments:
+                                                const LoginScreenArguments(
+                                              message: 'Login to continue!',
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Icon(
+                                            isRecipeAlreadyCooked
+                                                ? Icons.schedule
+                                                : Icons.schedule_outlined,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        if (user != null) {
+                                          if (isRecipeInFavorites) {
+                                            appProviderNotifier
+                                                .removeRecipeFromFavorites(
+                                                    recipe!);
+                                            FlushService.flushbarAlert(
+                                              context: context,
+                                              title: 'Success',
+                                              message:
+                                                  'Recipe removed from favorites',
+                                              seconds: 3,
+                                            );
+                                          } else {
+                                            FlushService.flushbarAlert(
+                                              context: context,
+                                              title: 'Success',
+                                              message:
+                                                  'Recipe added to favorites',
+                                              seconds: 3,
+                                            );
+                                            appProviderNotifier
+                                                .addRecipeToFavorites(recipe!);
+                                          }
+                                        } else {
+                                          Navigator.of(context).pushNamed(
+                                            '/login',
+                                            arguments:
+                                                const LoginScreenArguments(
+                                              message: 'Login to continue!',
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: SvgPicture.asset(
+                                            isRecipeInFavorites
+                                                ? 'assets/svg/bookmark-filled.svg'
+                                                : 'assets/svg/bookmark.svg',
+                                            color: Colors.black,
+                                            width: 24,
+                                            height: 24,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 )
                               ],
                             ),

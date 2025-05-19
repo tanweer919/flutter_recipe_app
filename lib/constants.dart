@@ -7,4 +7,4 @@ extension StringCasingExtension on String {
       .map((str) => str.toCapitalized)
       .join(' ');
 }
-String baseUrl = 'https://4ebd-110-225-141-205.ngrok-free.app';
+String baseUrl = 'https://recipe-428313.el.r.appspot.com';

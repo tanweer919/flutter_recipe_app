@@ -1,11 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dekorner_recipe/screens/recipe_page/recipe_screen_arguments.dart';
 import 'package:flutter/material.dart';
-
-import 'package:dekorner_recipe/models/recipe.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../../../models/recipe.dart';
 
 class PopularRecipeCard extends StatelessWidget {
   final Recipe recipe;

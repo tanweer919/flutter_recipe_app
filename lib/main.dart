@@ -1,5 +1,9 @@
-import 'package:dekorner_recipe/providers/app/providers.dart';
+import 'package:colorful_safe_area/colorful_safe_area.dart';
+import 'package:dekorner_recipe/providers/app/app_provider.dart';
 import 'package:dekorner_recipe/screens/home/home.dart';
+import 'package:dekorner_recipe/services/get_it_locator.dart';
+import 'package:dekorner_recipe/services/router_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -18,16 +22,23 @@ class MyHttpOverrides extends HttpOverrides {
 Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(systemNavigationBarColor: Colors.transparent),
   );
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  runApp(ProviderScope(child: MyApp()));
+  setupLocator();
+
+  runApp(
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends HookConsumerWidget {
   final ThemeData theme = ThemeData(
-      primaryColor: const Color(0xff0165ff),
+      primaryColor: const Color(0xff12285e),
       primaryColorDark: const Color.fromARGB(255, 146, 146, 148),
       scaffoldBackgroundColor: const Color(0xfffefefe),
       fontFamily: 'OpenSans',
@@ -84,7 +95,8 @@ class MyApp extends ConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final routerService = ref.watch(routerServiceProvider);
+    final routerService = locator<RouterService>();
+    final appProvider = ref.watch(appControlProvider);
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
@@ -96,25 +108,29 @@ class MyApp extends ConsumerWidget {
           surface: const Color(0XFFF8FAFC),
           onSurface: const Color(0xff7a7a7a),
           tertiary: const Color(0xffff8500),
+          surfaceContainer: const Color.fromARGB(130, 226, 225, 249),
           // tertiary: Color.fromARGB(255, 146, 146, 148).withOpacity(0.5),
         ),
       ),
       navigatorKey: routerService.navigationKey,
       onGenerateRoute: routerService.generateRoutes,
-      home: const Home(),
+      home: appProvider.user.when(
+        data: (user) => const Home(),
+        loading: () => const ColorfulSafeArea(
+          color: Colors.white,
+          child: ColorfulSafeArea(
+            color: Colors.white,
+            child: Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ),
+        ),
+        error: (error, stack) => Center(
+          child: Text('Error: $error'),
+        ),
+      ),
     );
-  }
-}
-
-class _EagerInitialization extends ConsumerWidget {
-  const _EagerInitialization({required this.child});
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Eagerly initialize providers by watching them.
-    // By using "watch", the provider will stay alive and not be disposed.
-    ref.watch(routerServiceProvider);
-    return child;
   }
 }

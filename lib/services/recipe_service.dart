@@ -2,11 +2,11 @@ import 'package:dekorner_recipe/models/category.dart';
 import 'package:dekorner_recipe/models/recipe.dart';
 import 'package:dekorner_recipe/models/recipe_filter.dart';
 import 'package:dekorner_recipe/models/search_recipe.dart';
+import 'package:dekorner_recipe/services/get_it_locator.dart';
 import 'package:dekorner_recipe/services/http_service.dart';
 
 class RecipeService {
-  HttpService httpService;
-  RecipeService({required this.httpService});
+  HttpService httpService = locator<HttpService>();
 
   Future<Recipe> getRecipe(int recipeId) async {
     final httpClient = await httpService.getApiClient();
@@ -33,18 +33,19 @@ class RecipeService {
     return recipes;
   }
 
-  Future<List<Recipe>> getRecipesByFilters(List<RecipeFilter> filters) async {
+  Future<List<Recipe>> getRecipesByFilters(List<RecipeFilter> filters, {int? page}) async {
     final httpClient = await httpService.getApiClient();
-    final response = await httpClient.get('api/filter/?${filters.map((filter) => 'filterIds=${filter.id}').join('&')}');
+    final response = await httpClient.get(
+        'api/filter/?${filters.map((filter) => 'filterIds=${filter.id}').join('&')}${page != null ? '&page=$page' : ''}');
     final recipes = (response.data["results"] as List<dynamic>)
         .map((recipe) => Recipe.fromJson(recipe))
         .toList();
     return recipes;
   }
 
-  Future<List<Recipe>> getPopularRecipes() async {
+  Future<List<Recipe>> getPopularRecipes({int? page}) async {
     final httpClient = await httpService.getApiClient();
-    final response = await httpClient.get('api/recipes/popular/');
+    final response = await httpClient.get('api/recipes/popular/${page != null ? '?page=$page' : ''}');
     final recipes = (response.data["results"] as List<dynamic>)
         .map((recipe) => Recipe.fromJson(recipe))
         .toList();
@@ -71,5 +72,51 @@ class RecipeService {
         .map((recipe) => SearchRecipe.fromJson(recipe))
         .toList();
     return recipes;
+  }
+
+  Future<void> addRecipeToFavorites(int recipeId) async {
+    try {
+      final httpClient = await httpService.getAuthenticatedApiClient();
+      final response = await httpClient
+          .post('api/recipes/save/', data: {"recipe_id": recipeId});
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception('Failed to add recipe to favorites');
+      }
+    } catch (error) {
+      throw Exception('Failed to add recipe to favorites');
+    }
+  }
+
+  Future<void> removeRecipeFromFavorites(int recipeId) async {
+    try {
+      final httpClient = await httpService.getAuthenticatedApiClient();
+      final response = await httpClient
+          .post('api/recipes/unsave/', data: {"recipe_id": recipeId});
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception('Failed to remove recipe to favorites');
+      }
+    } catch (error) {
+      throw Exception('Failed to remove recipe to favorites');
+    }
+  }
+
+  Future<void> addRecipeToCookingHistory(int recipeId) async {
+    try {
+      final httpClient = await httpService.getAuthenticatedApiClient();
+      final response = await httpClient.post(
+          'api/recipes/add-to-history/',
+          data: {"recipe_id": recipeId});
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception('Failed to add recipe to cooking history');
+      }
+    } catch (error) {
+      throw Exception('Failed to add recipe to cooking history');
+    }
   }
 }
