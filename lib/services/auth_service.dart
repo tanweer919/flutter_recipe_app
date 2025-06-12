@@ -15,6 +15,19 @@ class AuthService {
 
   Future<User?> getCurrentUser() async {
     try {
+      // First check if Firebase has a current user
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+      if (firebaseUser == null) {
+        return null;
+      }
+
+      // Get the stored tokens
+      final tokens = await localStorageService.getAuthToken();
+      if (tokens['accessToken'] == null || tokens['refreshToken'] == null) {
+        return null;
+      }
+
+      // Try to get the user from the backend
       final httpClient = await httpService.getAuthenticatedApiClient();
       final response = await httpClient.post('$baseUrl/api/auth/current_user/');
       if (response.statusCode == 200) {
@@ -79,5 +92,5 @@ class AuthService {
 }
 
 extension on Object {
-   get message => null;
+  get message => null;
 }

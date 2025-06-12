@@ -3,6 +3,7 @@ import 'package:dekorner_recipe/providers/app/app_provider.dart';
 import 'package:dekorner_recipe/screens/home/home.dart';
 import 'package:dekorner_recipe/services/get_it_locator.dart';
 import 'package:dekorner_recipe/services/router_service.dart';
+import 'package:dekorner_recipe/widgets/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 import 'dart:io';
@@ -116,17 +117,7 @@ class MyApp extends HookConsumerWidget {
       onGenerateRoute: routerService.generateRoutes,
       home: appProvider.user.when(
         data: (user) => const Home(),
-        loading: () => const ColorfulSafeArea(
-          color: Colors.white,
-          child: ColorfulSafeArea(
-            color: Colors.white,
-            child: Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          ),
-        ),
+        loading: () => const SplashScreen(),
         error: (error, stack) => Center(
           child: Text('Error: $error'),
         ),

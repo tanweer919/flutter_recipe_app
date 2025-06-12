@@ -65,5 +65,9 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSCameraUsageDescription</key>
+		<string>This app needs camera access to take photos of food for classification</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>This app needs photos access to select food images for classification</string>
 	</dict>
 </plist>

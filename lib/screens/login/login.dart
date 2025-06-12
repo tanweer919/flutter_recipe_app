@@ -8,7 +8,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LoginScreen extends HookConsumerWidget {
   final String? message;
-  const LoginScreen({super.key, this.message});
+  final String? screenToNavigate;
+  const LoginScreen({super.key, this.message, this.screenToNavigate});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +25,11 @@ class LoginScreen extends HookConsumerWidget {
         (prevValue, newValue) {
       if (prevValue == null && newValue != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          Navigator.of(context).pushNamed('/profile');
+          if (screenToNavigate != null) {
+            Navigator.of(context).pushReplacementNamed(screenToNavigate!);
+          } else {
+            Navigator.of(context).pushReplacementNamed('/profile');
+          }
         });
       }
     });

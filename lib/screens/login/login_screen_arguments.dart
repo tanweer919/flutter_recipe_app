@@ -1,4 +1,5 @@
 class LoginScreenArguments {
   final String? message;
-  const LoginScreenArguments({this.message});
+  final String? screenToNavigate;
+  const LoginScreenArguments({this.message, this.screenToNavigate});
 }

@@ -2,6 +2,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
+import 'package:dekorner_recipe/constants.dart';
 import 'package:dekorner_recipe/models/tab_bar_item.dart';
 import 'package:dekorner_recipe/providers/app/app_provider.dart';
 import 'package:dekorner_recipe/screens/login/login_screen_arguments.dart';
@@ -21,6 +22,8 @@ import 'package:readmore/readmore.dart';
 import 'package:dekorner_recipe/widgets/custom_tab_bar.dart';
 
 class RecipeScreen extends HookConsumerWidget {
+  static const String routeName = '/recipe';
+
   final Recipe? recipe;
   final int? recipeId;
   const RecipeScreen({
@@ -213,6 +216,7 @@ class RecipeScreen extends HookConsumerWidget {
                                             seconds: 3,
                                           );
                                         } else {
+                                          appProviderNotifier.setBottomNavbarIndex(3);
                                           Navigator.of(context).pushNamed(
                                             '/login',
                                             arguments:
@@ -268,6 +272,7 @@ class RecipeScreen extends HookConsumerWidget {
                                                 .addRecipeToFavorites(recipe!);
                                           }
                                         } else {
+                                          appProviderNotifier.setBottomNavbarIndex(3);
                                           Navigator.of(context).pushNamed(
                                             '/login',
                                             arguments:
@@ -912,23 +917,6 @@ class IngredientSection extends HookWidget {
       ],
     );
   }
-}
-
-(bool, int?, int?) extractFraction(String input) {
-  // Remove any leading/trailing whitespace and match the fraction pattern
-  final match = RegExp(r'^(\d+)/(\d+)$').firstMatch(input.trim());
-
-  if (match != null) {
-    // Parse the numerator and denominator
-    final numerator = int.tryParse(match.group(1)!);
-    final denominator = int.tryParse(match.group(2)!);
-
-    // Return the parsed values
-    return (true, numerator, denominator);
-  }
-
-  // Return null values if the input is not a valid fraction
-  return (false, null, null);
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {

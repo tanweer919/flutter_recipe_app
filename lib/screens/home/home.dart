@@ -7,6 +7,7 @@ import 'package:dekorner_recipe/screens/home/widgets/popular_recipe_card.dart';
 import 'package:dekorner_recipe/screens/home/widgets/popular_recipe_card_skeleton.dart';
 import 'package:dekorner_recipe/screens/home/widgets/recipe_card.dart';
 import 'package:dekorner_recipe/screens/home/widgets/recipe_card_skeleton.dart';
+import 'package:dekorner_recipe/screens/login/login_screen_arguments.dart';
 import 'package:dekorner_recipe/screens/recipe_page/recipe_screen_arguments.dart';
 import 'package:dekorner_recipe/services/get_it_locator.dart';
 import 'package:dekorner_recipe/services/recipe_service.dart';
@@ -24,6 +25,7 @@ class Home extends HookConsumerWidget {
     final activeIndex = useState(0);
     final appProviderNotifier = ref.watch(appControlProvider.notifier);
     final appProvider = ref.watch(appControlProvider);
+    final user = appProvider.user.asData?.value;
     final recipeService = locator<RecipeService>();
     final isLoading = useState(false);
     Widget searchBar() {
@@ -262,104 +264,123 @@ class Home extends HookConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: searchBar(),
               ),
-              // const SizedBox(
-              //   height: 16,
-              // ),
-              // Padding(
-              //   padding: const EdgeInsets.only(right: 96.0),
-              //   child: Stack(
-              //     clipBehavior: Clip.none,
-              //     children: [
-              //       Container(
-              //         height: 150,
-              //         decoration: const BoxDecoration(
-              //           color: Color(0xfffff0cb),
-              //           borderRadius: BorderRadius.only(
-              //             topRight: Radius.circular(100),
-              //             bottomRight: Radius.circular(100),
-              //           ),
-              //         ),
-              //         child: Padding(
-              //           padding: const EdgeInsets.only(
-              //               left: 16.0, right: 64.0, top: 16.0, bottom: 16.0),
-              //           child: Column(
-              //             children: [
-              //               RichText(
-              //                 text: const TextSpan(
-              //                   children: [
-              //                     TextSpan(
-              //                       text:
-              //                           'Find recipes based on what you already have at ',
-              //                       style: TextStyle(
-              //                         color: Colors.black,
-              //                         fontSize: 22,
-              //                         height: 1.3,
-              //                       ),
-              //                     ),
-              //                     TextSpan(
-              //                       text: 'home',
-              //                       style: TextStyle(
-              //                         fontWeight: FontWeight.bold,
-              //                         color: Colors.black,
-              //                         fontSize: 22,
-              //                         height: 1.3,
-              //                       ),
-              //                     ),
-              //                   ],
-              //                 ),
-              //               ),
-              //               const SizedBox(
-              //                 height: 4,
-              //               ),
-              //               const Row(
-              //                 children: [
-              //                   Text(
-              //                     "Let's go",
-              //                     style: TextStyle(
-              //                       color: Color(0xfffb9d31),
-              //                       fontSize: 18,
-              //                       fontWeight: FontWeight.w600,
-              //                     ),
-              //                   ),
-              //                   SizedBox(
-              //                     width: 4,
-              //                   ),
-              //                   Icon(
-              //                     Icons.arrow_forward,
-              //                     color: Color(0xfffb9d31),
-              //                     weight: 1.2,
-              //                   ),
-              //                 ],
-              //               )
-              //             ],
-              //           ),
-              //         ),
-              //       ),
-              //       Positioned(
-              //         right: -60,
-              //         top: 15,
-              //         child: Container(
-              //           height: 120,
-              //           width: 120,
-              //           decoration: BoxDecoration(
-              //             border: Border.all(
-              //               color: Colors.white,
-              //               width: 8,
-              //             ),
-              //             shape: BoxShape.circle,
-              //           ),
-              //           child: ClipOval(
-              //             child: Image.asset(
-              //               'assets/images/dish2.jpeg',
-              //               height: 100,
-              //               width: 100,
-              //             ),
-              //           ),
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
+              const SizedBox(
+                height: 16,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 96.0),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      height: 150,
+                      decoration: const BoxDecoration(
+                        color: Color(0xfffff0cb),
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(100),
+                          bottomRight: Radius.circular(100),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 16.0, right: 64.0, top: 16.0, bottom: 16.0),
+                        child: Column(
+                          children: [
+                            RichText(
+                              text: const TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text:
+                                        'Instantly identify dishes and ingredients from ',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 22,
+                                      height: 1.3,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: 'photos',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                      fontSize: 22,
+                                      height: 1.3,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                if (user == null) {
+                                  appProviderNotifier.setBottomNavbarIndex(3);
+                                  Navigator.of(context).pushNamed(
+                                    '/login',
+                                    arguments: const LoginScreenArguments(
+                                      message:
+                                          'Please login to use ai features',
+                                      screenToNavigate:
+                                          '/food-classification',
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.of(context)
+                                      .pushNamed('/food-classification');
+                                }
+                              },
+                              child: const Row(
+                                children: [
+                                  Text(
+                                    "Let's go",
+                                    style: TextStyle(
+                                      color: Color(0xfffb9d31),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 4,
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: Color(0xfffb9d31),
+                                    weight: 1.2,
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: -60,
+                      top: 15,
+                      child: Container(
+                        height: 120,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 8,
+                          ),
+                          shape: BoxShape.circle,
+                        ),
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/images/dish2.jpeg',
+                            height: 100,
+                            width: 100,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(
                 height: 8,
               ),

@@ -3,6 +3,7 @@ import 'package:dekorner_recipe/models/recipe_filter.dart';
 import 'package:dekorner_recipe/screens/ai_coming_soon_screen.dart';
 import 'package:dekorner_recipe/screens/filter_results/filter_results.dart';
 import 'package:dekorner_recipe/screens/filters/fliters.dart';
+import 'package:dekorner_recipe/screens/food_classification/food_classification_screen.dart';
 import 'package:dekorner_recipe/screens/home/home.dart';
 import 'package:dekorner_recipe/screens/login/login.dart';
 import 'package:dekorner_recipe/screens/login/login_screen_arguments.dart';
@@ -26,12 +27,14 @@ class RouterService {
       '/login',
       '/popular-recipes',
       '/ai',
+      '/food-classification',
     ];
 
     PageRouteBuilder<dynamic> customRoutes(String route, Object? args) {
       Recipe? recipe;
       int? recipeId;
       String? message;
+      String? screenToNavigate;
       List<RecipeFilter>? filters;
       if (args != null) {
         if (route == '/recipe') {
@@ -46,12 +49,14 @@ class RouterService {
         if (route == '/login') {
           final arguments = args as LoginScreenArguments;
           message = arguments.message;
+          screenToNavigate = arguments.screenToNavigate;
         }
       }
       Map<String, Widget> screens = {
         '/': const Home(),
         '/login': LoginScreen(
           message: message,
+          screenToNavigate: screenToNavigate,
         ),
         '/home': const Home(),
         '/recipe': RecipeScreen(recipe: recipe, recipeId: recipeId),
@@ -60,6 +65,7 @@ class RouterService {
         '/profile': const ProfileScreen(),
         '/popular-recipes': const PopularRecipesScreen(),
         '/ai': const AIComingSoonScreen(),
+        '/food-classification': const FoodClassificationScreen(),
       };
 
       return PageRouteBuilder(

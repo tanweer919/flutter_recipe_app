@@ -2,8 +2,10 @@ import 'package:dekorner_recipe/models/category.dart';
 import 'package:dekorner_recipe/models/recipe.dart';
 import 'package:dekorner_recipe/models/recipe_filter.dart';
 import 'package:dekorner_recipe/models/search_recipe.dart';
+import 'package:dekorner_recipe/models/food_classification.dart';
 import 'package:dekorner_recipe/services/get_it_locator.dart';
 import 'package:dekorner_recipe/services/http_service.dart';
+import 'package:dio/dio.dart';
 
 class RecipeService {
   HttpService httpService = locator<HttpService>();
@@ -33,7 +35,8 @@ class RecipeService {
     return recipes;
   }
 
-  Future<List<Recipe>> getRecipesByFilters(List<RecipeFilter> filters, {int? page}) async {
+  Future<List<Recipe>> getRecipesByFilters(List<RecipeFilter> filters,
+      {int? page}) async {
     final httpClient = await httpService.getApiClient();
     final response = await httpClient.get(
         'api/filter/?${filters.map((filter) => 'filterIds=${filter.id}').join('&')}${page != null ? '&page=$page' : ''}');
@@ -45,7 +48,8 @@ class RecipeService {
 
   Future<List<Recipe>> getPopularRecipes({int? page}) async {
     final httpClient = await httpService.getApiClient();
-    final response = await httpClient.get('api/recipes/popular/${page != null ? '?page=$page' : ''}');
+    final response = await httpClient
+        .get('api/recipes/popular/${page != null ? '?page=$page' : ''}');
     final recipes = (response.data["results"] as List<dynamic>)
         .map((recipe) => Recipe.fromJson(recipe))
         .toList();
@@ -107,9 +111,8 @@ class RecipeService {
   Future<void> addRecipeToCookingHistory(int recipeId) async {
     try {
       final httpClient = await httpService.getAuthenticatedApiClient();
-      final response = await httpClient.post(
-          'api/recipes/add-to-history/',
-          data: {"recipe_id": recipeId});
+      final response = await httpClient
+          .post('api/recipes/add-to-history/', data: {"recipe_id": recipeId});
       if (response.statusCode == 200) {
         return;
       } else {
@@ -117,6 +120,24 @@ class RecipeService {
       }
     } catch (error) {
       throw Exception('Failed to add recipe to cooking history');
+    }
+  }
+
+  Future<FoodClassificationResponse> classifyFoodImage(String imagePath) async {
+    try {
+      final httpClient = await httpService.getAuthenticatedApiClient();
+      final formData = FormData.fromMap({
+        'image': await MultipartFile.fromFile(imagePath),
+      });
+
+      final response = await httpClient.post(
+        'api/classify/',
+        data: formData,
+      );
+
+      return FoodClassificationResponse.fromJson(response.data);
+    } catch (e) {
+      throw Exception('Failed to classify food image: $e');
     }
   }
 }
