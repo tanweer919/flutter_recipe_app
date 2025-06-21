@@ -220,7 +220,7 @@ class RecipeScreen extends HookConsumerWidget {
                                           Navigator.of(context).pushNamed(
                                             '/login',
                                             arguments:
-                                                const LoginScreenArguments(
+                                                LoginScreenArguments(
                                               message: 'Login to continue!',
                                             ),
                                           );
@@ -276,7 +276,7 @@ class RecipeScreen extends HookConsumerWidget {
                                           Navigator.of(context).pushNamed(
                                             '/login',
                                             arguments:
-                                                const LoginScreenArguments(
+                                                LoginScreenArguments(
                                               message: 'Login to continue!',
                                             ),
                                           );

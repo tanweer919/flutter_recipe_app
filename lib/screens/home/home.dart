@@ -319,7 +319,7 @@ class Home extends HookConsumerWidget {
                                   appProviderNotifier.setBottomNavbarIndex(3);
                                   Navigator.of(context).pushNamed(
                                     '/login',
-                                    arguments: const LoginScreenArguments(
+                                    arguments: LoginScreenArguments(
                                       message:
                                           'Please login to use ai features',
                                       screenToNavigate:

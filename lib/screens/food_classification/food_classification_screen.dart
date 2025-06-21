@@ -33,7 +33,7 @@ class FoodClassificationScreen extends HookConsumerWidget {
           appProviderNotifier.setBottomNavbarIndex(3);
           Navigator.of(context).pushReplacementNamed(
             '/login',
-            arguments: const LoginScreenArguments(
+            arguments: LoginScreenArguments(
               message: 'Please login to use ai features',
               screenToNavigate: '/food-classification',
             ),

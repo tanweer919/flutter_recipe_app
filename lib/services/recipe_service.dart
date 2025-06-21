@@ -131,13 +131,34 @@ class RecipeService {
       });
 
       final response = await httpClient.post(
-        'api/classify/',
+        'api/predict/',
         data: formData,
       );
 
       return FoodClassificationResponse.fromJson(response.data);
     } catch (e) {
       throw Exception('Failed to classify food image: $e');
+    }
+  }
+
+  Future<String> sendAICookingChatMessage(String message) async {
+    try {
+      final httpClient = await httpService.getApiClient();
+      final formData = FormData.fromMap({
+        'query': message,
+      });
+      final response = await httpClient.post(
+        'api/predict/',
+        data: formData,
+      );
+      if (response.statusCode == 200 && response.data != null) {
+        // Adjust this if the response structure is different
+        return response.data['response'] ?? response.data.toString();
+      } else {
+        throw Exception('Failed to get AI response');
+      }
+    } catch (e) {
+      throw Exception('Failed to send message to AI: $e');
     }
   }
 }

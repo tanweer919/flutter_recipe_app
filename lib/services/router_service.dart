@@ -11,6 +11,7 @@ import 'package:dekorner_recipe/screens/popular_recipes/popular_recipes.dart';
 import 'package:dekorner_recipe/screens/profile/profile.dart';
 import 'package:dekorner_recipe/screens/recipe_page/recipe_screen.dart';
 import 'package:dekorner_recipe/screens/recipe_page/recipe_screen_arguments.dart';
+import 'package:dekorner_recipe/screens/ai_chat_screen.dart';
 import 'package:flutter/material.dart';
 
 class RouterService {
@@ -28,6 +29,7 @@ class RouterService {
       '/popular-recipes',
       '/ai',
       '/food-classification',
+      '/ai-chat',
     ];
 
     PageRouteBuilder<dynamic> customRoutes(String route, Object? args) {
@@ -66,6 +68,7 @@ class RouterService {
         '/popular-recipes': const PopularRecipesScreen(),
         '/ai': const AIComingSoonScreen(),
         '/food-classification': const FoodClassificationScreen(),
+        '/ai-chat': const AIChatScreen(),
       };
 
       return PageRouteBuilder(

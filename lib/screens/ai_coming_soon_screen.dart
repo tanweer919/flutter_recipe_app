@@ -29,12 +29,18 @@ class AIComingSoonScreen extends HookConsumerWidget {
                   appProviderNotifier.setBottomNavbarIndex(3);
                   Navigator.of(context).pushNamed(
                     '/login',
-                    arguments: const LoginScreenArguments(
+                    arguments: LoginScreenArguments(
                       message: 'Please login to use ai features',
-                      screenToNavigate: '/food-classification',
+                      screenToNavigate: title == 'AI Cooking Assistant'
+                          ? '/ai-chat'
+                          : '/food-classification',
                     ),
                   );
                 } else {
+                  if (title == 'AI Cooking Assistant') {
+                    Navigator.of(context).pushNamed('/ai-chat');
+                    return;
+                  }
                   Navigator.of(context).pushNamed('/food-classification');
                 }
               },
@@ -209,6 +215,15 @@ class AIComingSoonScreen extends HookConsumerWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
+                _buildFeatureCard(
+                  context,
+                  icon: Icons.auto_awesome_rounded,
+                  title: 'AI Cooking Assistant',
+                  description: 'Chat with our AI assistant for cooking help',
+                  gradient: [Colors.teal, Colors.teal.shade700],
+                  isComingSoon: false,
+                ),
+                const SizedBox(height: 16),
                 _buildFeatureCard(
                   context,
                   icon: Icons.camera_alt_rounded,
