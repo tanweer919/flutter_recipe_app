@@ -54,13 +54,21 @@ class Recipe {
       noOfServings: json['no_of_servings'],
       cookTime: json['cook_time'],
       prepTime: json['prep_time'],
-      totalTime: json['total_time'],
+      totalTime: (json['total_time'] as String)
+          .replaceAll('minutes', 'mins')
+          .replaceAll('minutes', 'min')
+          .replaceAll('hours', 'hrs')
+          .replaceAll('hour', 'hr'),
       ingredients: (json['ingredients'] as List)
           .map((i) => RecipeIngredient.fromJson(i))
           .toList(),
-      images: (json['images'] as List)
-          .map((image) => image["image_url"] as String)
-          .toList(),
+      images: (json['images'] as List).isNotEmpty
+          ? (json['images'] as List)
+              .map((image) => image["image_url"] as String)
+              .toList()
+          : [
+              'https://res.cloudinary.com/doy9hqxr1/image/upload/q_40/v1725202027/dish2_u6uxaz.jpg'
+            ],
       categories: (json['search_terms'] as List)
           .map((category) => Category.fromJson(category['search']))
           .toList(),

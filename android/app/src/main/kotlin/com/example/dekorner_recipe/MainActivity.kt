@@ -1,4 +1,4 @@
-package com.example.dekorner_recipe
+package com.dekorner.recipify
 
 import io.flutter.embedding.android.FlutterActivity
 

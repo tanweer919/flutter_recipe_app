@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dekorner_recipe/screens/recipe_page/recipe_screen_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../models/recipe.dart';
@@ -11,7 +12,10 @@ class RecipeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).pushNamed('/recipe',
+            arguments: RecipeScreenArguments(recipe: data));
+      },
       // Card Wrapper
       child: Container(
         width: 160,
@@ -22,9 +26,9 @@ class RecipeCard extends StatelessWidget {
           color: Colors.grey,
           borderRadius: BorderRadius.circular(20),
           image: DecorationImage(
-            image: CachedNetworkImageProvider(data.images.isNotEmpty
-                ? data.images[0]
-                : 'https://res.cloudinary.com/doy9hqxr1/image/upload/q_40/v1725202027/dish2_u6uxaz.jpg'),
+            image: CachedNetworkImageProvider(
+              data.images[0],
+            ),
             fit: BoxFit.cover,
           ),
         ),

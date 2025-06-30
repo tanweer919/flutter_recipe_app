@@ -16,10 +16,11 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.6+7
 
 environment:
-  sdk: ">=3.4.4 <4.0.0"
+  sdk: ">=3.4.0 <4.0.0"
+  flutter: ">=3.32.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -29,6 +30,8 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
 
   # The following adds the Cupertino Icons font to your application.
@@ -46,6 +49,18 @@ dependencies:
   auto_size_text: ^3.0.0
   shimmer: ^3.0.0
   optional: ^6.1.0+1
+  readmore: ^3.0.0
+  expandable_page_view: ^1.0.17
+  hugeicons: ^0.0.7
+  google_sign_in: ^6.2.2
+  jwt_decoder: ^2.0.1
+  firebase_auth: ^5.5.0
+  firebase_core: ^3.12.0
+  colorful_safe_area: ^1.0.0
+  get_it: ^8.0.3
+  another_flushbar: ^1.12.30
+  firebase_analytics: ^11.4.5
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
@@ -61,8 +76,9 @@ dev_dependencies:
   build_runner: ^2.4.11
   json_serializable: ^6.8.0
   riverpod_generator: ^3.0.0-dev.11
-
   riverpod_lint: ^3.0.0-dev.4
+  flutter_native_splash: ^2.4.0
+  flutter_launcher_icons: ^0.13.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -78,6 +94,7 @@ flutter:
     - assets/svg/
     - assets/images/
     - assets/rive/
+    - shorebird.yaml
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
@@ -95,6 +112,9 @@ flutter:
         - asset: assets/fonts/OpenSans-Medium.ttf
         - asset: assets/fonts/OpenSans-SemiBold.ttf
         - asset: assets/fonts/OpenSans-Bold.ttf
+    - family: MyFlutterApp
+      fonts:
+        - asset: assets/fonts/MyFlutterApp.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -126,3 +146,19 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+# flutter_launcher_icons configuration
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"
+  remove_alpha_ios: true
+
+flutter_native_splash:
+  color: "#222222" # Example: deep brown, matches your app
+  image: assets/images/splash.png
+  android_12:
+    image: assets/images/splash.png
+    icon_background_color: "#222222"
+  ios: true
+  android: true

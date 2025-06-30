@@ -1,0 +1,2 @@
+/Users/user/Documents/flutter/dekorner_recipe/android/app/.cxx/RelWithDebInfo/57401s3r/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/user/Documents/flutter/dekorner_recipe/android/app/.cxx/RelWithDebInfo/57401s3r/arm64-v8a/CMakeFiles/rebuild_cache.dir
