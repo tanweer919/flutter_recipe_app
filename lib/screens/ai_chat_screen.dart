@@ -4,7 +4,6 @@ import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:dekorner_recipe/providers/app/app_provider.dart';
 import 'package:dekorner_recipe/screens/login/login_screen_arguments.dart';
 import 'package:dekorner_recipe/services/recipe_service.dart';
-import 'package:dekorner_recipe/widgets/widget_with_bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
